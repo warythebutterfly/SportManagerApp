@@ -67,7 +67,7 @@ function closeNav() {
   <a href="index.html">Home</a>
   <a href="squadmembers.html">Squad Members</a>
   <a href="addfixture.html">Add Fixture</a>
-   <a href="../login.html">Sign Out</a
+   <a href="../logout.php">Sign Out</a>
 </div>
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
 

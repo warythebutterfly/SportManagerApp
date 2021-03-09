@@ -1,3 +1,15 @@
+<?php 
+session_start();
+
+include("C:/xampp/htdocs/sportmanagerapp/connection.php");
+include("C:/xampp/htdocs/sportmanagerapp/functions.php");
+
+  $result = mysqli_query($con,"SELECT * FROM users WHERE Roleid = 2"  );
+
+	$check_login = user_login_check($con);
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,43 +100,11 @@ body {
 
     <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="index.html">Home</a>
-  <a href="squadmembers.html">Squad Members</a>
-  <a type="button" data-toggle="modal" data-target="#exampleModalCenter" href="#">Add Fixture</a>
-   <a href="../login.html">Sign Out</a>
+  <a href="index.php">Home</a>
+  <a href="squadmembers.php">Squad Members</a>
+ 
+   <a href="../logout.php">Sign Out</a>
    </div>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Add Fixture</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-md-4">Home Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="hTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Away Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Date/Time</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Set Up Fixture</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
 
@@ -140,44 +120,22 @@ body {
     <th>FirstName</th>
     <th>LastName</th>
     <th>Email</th>
-    <th>IsAvailable</th>
+    <!-- <th>IsAvailable</th> -->
   </tr>
   <tr>
-    <td>Alfred</td>
-    <td>Anders</td>
-    <td>Germany@example.com</td>
-    <td>Yes</td>
+  <?php while($row = mysqli_fetch_array($result) )
+                {
+                ?>
+    <td><?php echo $row["FirstName"]; ?></td>
+    <td><?php echo $row["LastName"]; ?></td>
+    <td><?php echo $row["Email"]; ?></td>
+    <!-- <td><?php //echo $row["isActive"]; ?></td> -->
   </tr>
-  <tr>
-    <td>Centro Moctezuma</td>
-    <td>Francisco Chang</td>
-    <td>Mexico@example.com</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>Ernst Handel</td>
-    <td>Roland Mendel</td>
-    <td>Austria@example.com</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>Island Trading</td>
-    <td>Helen Bennett</td>
-    <td>UK@example.com</td>
-    <td>Yes</td>
-  </tr>
-  <tr>
-    <td>Laughing Bacchus Winecellars</td>
-    <td>Yoshi Tannamuri</td>
-    <td>Canada@example.com</td>
-    <td>No</td>
-  </tr>
-  <tr>
-    <td>Magazzini Alimentari Riuniti</td>
-    <td>Giovanni Rovelli</td>
-    <td>Italy@example.com</td>
-    <td>Yes</td>
-  </tr>
+  <?php }  ?>
+    <?php
+     // close connection database
+     mysqli_close($con);
+                ?>
 </table>
 </div>
     </div>

@@ -1,3 +1,12 @@
+<?php 
+session_start();
+
+    include("C:/xampp/htdocs/sportmanagerapp/connection.php");
+    include("C:/xampp/htdocs/sportmanagerapp/functions.php");
+
+	$check_login = user_login_check($con);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,17 +73,18 @@ body {
 </style>
 </head>
 <body style="padding: 30px">
-
+<div class="alert">
+</div>
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="index.html">Home</a>
-  <a href="squadmembers.html">Squad Members</a>
+  <a href="index.php">Home</a>
+  <a href="squadmembers.php">Squad Members</a>
   <a type="button" data-toggle="modal" data-target="#exampleModalCenter" href="#">Add Fixture</a>
-   <a href="../login.html">Sign Out</a>
+   <a href="../logout.php">Sign Out</a>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<!-- <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -83,7 +93,8 @@ body {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
+      <Form method="post">     
+      <div class="modal-body" >
         <div class="row">
             <div class="col-md-4">Home Team</div>
       <div class="col-md-4 ml-auto"><input type="text" name="hTeam"></div>
@@ -94,16 +105,61 @@ body {
         </div>
         <div class="row">
             <div class="col-md-4">Date/Time</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
+      <div class="col-md-4 ml-auto"><input type="date" name="datetime"></div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" id="btnSetUpFixture" class="btn btn-primary">Set Up Fixture</button>
       </div>
+      </Form>
+      
     </div>
   </div>
 </div>
+
+ -->
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalCenterTitle">Add Fixture</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post">
+     <div class="modal-body">     
+      <div class="form-group">
+       <label>Home Team</label>
+       <input type="name" class="form-control" name="homeT" required>
+      </div>
+      <div class="form-group">
+       <label>Away Team</label>
+       <input type="name" class="form-control" name="awayT" required>
+      </div>
+      <div class="form-group">
+       <label>Date</label>
+       <input type="date" class="form-control" name="date" required></input>
+      </div>
+      <div class="form-group">
+       <label>Time</label>
+       <input type="time" class="form-control" name="time"  required>
+      </div>     
+     </div>
+     <div class="modal-footer">
+      <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+      <input type="submit" class="btn btn-success" name="add" value="Submit Fixture">
+     </div>
+    </form>
+      
+    </div>
+  </div>
+</div>
+
+
+
 
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
 
@@ -123,7 +179,7 @@ body {
             <div class="col-md-3"><p>Home Vs Away</p></div>
             <div class="col-md-3">Date/Time</div>
             <div class="col-md-3"><button type="button" class="btn btn-primary">Select Team</button></div>
-      <div class="col-md-3 ml-auto"><button type="button" class="btn btn-primary">Team Selected</button></div>
+      <div class="col-md-3 ml-auto"><button type="button" class="btn btn-primary">Team Selected </button></div>
 
         </div>
                 

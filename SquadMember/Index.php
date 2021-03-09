@@ -1,3 +1,12 @@
+<?php 
+session_start();
+
+    include("C:/xampp/htdocs/sportmanagerapp/connection.php");
+    include("C:/xampp/htdocs/sportmanagerapp/functions.php");
+
+	$check_login = user_login_check($con);
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,9 +82,9 @@ body {
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
   <a href="index.html">Home</a>
-  <a href="squadmembers.html">Squad Members</a>
+  <a href="squadmembers.php">Squad Members</a>
   <a type="button" href="#">Swap</a>
-   <a href="../login.html">Sign Out</a>
+   <a href="../logout.php">Sign Out</a>
 </div>
 
 <!-- Modal -->

@@ -1,4 +1,62 @@
+<?php 
 
+session_start();
+
+	include("connection.php");
+	include("functions.php");
+
+
+	if($_SERVER['REQUEST_METHOD'] == "POST")
+	{
+		//something was posted
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+
+		if(!empty($email) && !empty($password))
+		{
+
+			//read from database
+			$query = "select * from users where Email = '$email' limit 1";
+			$result = mysqli_query($con, $query);
+
+			if($result)
+			{
+				if($result && mysqli_num_rows($result) > 0)
+				{
+
+					$user_data = mysqli_fetch_assoc($result);
+					
+					if($user_data['Password'] === $password)
+					{
+
+						$_SESSION['id'] = $user_data['id'];
+            if($user_data['Roleid'] == 1)
+            {
+              header("Location:teammanager/index.php");
+              
+						die;
+            }elseif ($user_data['Roleid'] == 2)
+            {
+              header("Location:squadmember/index.php");
+						  die;
+            }
+						
+					}
+				}
+			}
+			
+			echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Error !</strong> Wrong email or password !</div>'; 
+		}else
+		{
+      echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Error !</strong> Wrong email or password !</div>'; 
+		}
+	}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,12 +74,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-6 login-section-wrapper">
-          <div class="brand-wrapper">
-            <img src="assets/images/logo.svg" alt="logo" class="logo">
-          </div>
+          
           <div class="login-wrapper my-auto">
             <h1 class="login-title">Log in</h1>
-            <form action="#!">
+            <form method="post">
               <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" name="email" id="email" class="form-control" placeholder="email@example.com">
@@ -30,10 +86,10 @@
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="enter your passsword">
               </div>
-              <input name="login" id="login" class="btn btn-block login-btn" type="button" value="Login">
+              <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Login">
             </form>
            <!--  <a href="#!" class="forgot-password-link">Forgot password?</a> -->
-            <p class="login-wrapper-footer-text">Don't have an account?<br> <a href="SignUp.html" class="text-reset">Register here as a team manager</a><br><a href="SignIn.html" class="text-reset">Register here as a squad member</a></p>
+            <p class="login-wrapper-footer-text">Don't have an account?<br> <a href="managersignup.php" class="text-reset">Register here as a team manager</a><br><a href="membersignup.php" class="text-reset">Register here as a squad member</a></p>
           </div>
         </div>
         <div class="col-sm-6 px-0 d-none d-sm-block">
