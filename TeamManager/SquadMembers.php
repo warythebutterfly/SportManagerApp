@@ -5,7 +5,8 @@ include("C:/xampp/htdocs/sportmanagerapp/connection.php");
 include("C:/xampp/htdocs/sportmanagerapp/functions.php");
 
   $result = mysqli_query($con,"SELECT * FROM users WHERE Roleid = 2"  );
-
+  $add_fixtures = Add_Fixtures($con);
+  $resultTeam = mysqli_query($con,"SELECT * FROM Teams"  );
 	$check_login = user_login_check($con);
 
 ?>
@@ -110,29 +111,36 @@ body {
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Add Fixture</h5>
+        <h3 class="modal-title" id="exampleModalCenterTitle">Add Fixture</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-md-4">Home Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="hTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Away Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Date/Time</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
+      <form method="post">
+     <div class="modal-body">     
+      <div class="form-group">
+       <label>Home Team</label>
+       <input type="name" class="form-control" name="homeT" required>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Set Up Fixture</button>
+      <div class="form-group">
+       <label>Away Team</label>
+       <input type="name" class="form-control" name="awayT" required>
       </div>
+      <div class="form-group">
+       <label>Date</label>
+       <input type="date" class="form-control" name="Fixturedate" required></input>
+      </div>
+      <div class="form-group">
+       <label>Time</label>
+       <input type="time" class="form-control" name="time"  required>
+      </div> 
+     </div>
+     <div class="modal-footer">
+      <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+      <input type="submit" class="btn btn-success"  value="addFixture">
+     </div>
+      </form>
+      
     </div>
   </div>
 </div>

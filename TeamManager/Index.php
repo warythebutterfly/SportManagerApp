@@ -5,6 +5,9 @@ session_start();
     include("C:/xampp/htdocs/sportmanagerapp/functions.php");
 
 	$check_login = user_login_check($con);
+  $add_fixtures = Add_Fixtures($con);
+  $resultFix = mysqli_query($con,"SELECT * FROM Fixtures");
+  $resultTeam = mysqli_query($con,"SELECT * FROM Teams");
 
 ?>
 <!DOCTYPE html>
@@ -133,26 +136,38 @@ body {
      <div class="modal-body">     
       <div class="form-group">
        <label>Home Team</label>
-       <input type="name" class="form-control" name="homeT" required>
+       <select type="name" class="form-control" name="homeT" required>
+       <?php while ($rows = mysqli_fetch_assoc($resultTeam)){
+         $home_team = $rows['Name'];
+         echo "<option value='$home_team'>$home_team</option>";
+       } ?>
+       </select>
       </div>
       <div class="form-group">
        <label>Away Team</label>
-       <input type="name" class="form-control" name="awayT" required>
+       <select type="name" class="form-control" name="awayT" required>
+       <?php while ($rowss = mysqli_fetch_assoc($resultTeam)){
+         if($rowss['Name'] == PSG)
+         $away_team = $rowss;
+         
+         echo "<option value='$away_team'>$away_team</option>";
+       } ?>
+       </select>      
       </div>
       <div class="form-group">
        <label>Date</label>
-       <input type="date" class="form-control" name="date" required></input>
+       <input type="date" class="form-control" name="Fixturedate" required></input>
       </div>
       <div class="form-group">
        <label>Time</label>
        <input type="time" class="form-control" name="time"  required>
-      </div>     
+      </div> 
      </div>
      <div class="modal-footer">
       <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-      <input type="submit" class="btn btn-success" name="add" value="Submit Fixture">
+      <input type="submit" class="btn btn-success"  value="addFixture">
      </div>
-    </form>
+      </form>
       
     </div>
   </div>
@@ -174,17 +189,45 @@ body {
 
 
            
-                 <div class="row">
+               <!-- <div class="row">
 
             <div class="col-md-3"><p>Home Vs Away</p></div>
             <div class="col-md-3">Date/Time</div>
             <div class="col-md-3"><button type="button" class="btn btn-primary">Select Team</button></div>
       <div class="col-md-3 ml-auto"><button type="button" class="btn btn-primary">Team Selected </button></div>
 
-        </div>
-                
+        </div> -->
+      <div class="row">
+        <table>
+          <tr>
+            <th class="col-md-6"><p>Home Vs Away</p></th>
+            <th class="col-md-6">Date/Time</th>
+            <th class="col-md-3"></th>
+          <th class="col-md-3 ml-auto"></th>
 
-</div>
+          </tr>
+          <br>
+          <br>
+          <?php while($row = mysqli_fetch_array($resultFix) )
+                {
+                ?>
+          <tr>
+            <td class="col-md-6"><p><?php echo $row["Home"]; ?> vs <?php echo $row["Away"]; ?></p></td>
+            <td class="col-md-6"><?php echo $row["Date"]; ?>/<?php echo $row["Time"]; ?></td>
+            <td class="col-md-3"><button type="button" class="btn btn-primary">Select Team</button></td>
+            <td class="col-md-3 ml-auto"><button type="button" class="btn btn-primary">Team Selected </button></td>
+
+          </tr>
+          <br><br>
+          <?php }  ?>
+    <?php
+     // close connection database
+     mysqli_close($con);
+                ?>
+        </table>   
+        </div> 
+
+  </div>
 </div>
 
    
