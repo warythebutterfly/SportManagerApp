@@ -47,6 +47,7 @@ session_start();
                 <input type="password" name="password" id="password" class="form-control" placeholder="enter your passsword">
                 <input type="hidden" name="roleid" value="1" class="form-control">
               </div>
+              
 
               <input  id="signup" class="btn btn-block login-btn" type="submit" value="Signup">
             </form>

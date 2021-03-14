@@ -3,7 +3,8 @@
 $dbhost = "localhost";
 $dbuser = "root";
 $dbpass = "";
-$dbname = "sportmanagerdb";
+//$dbname = "sportmanagerdb";
+$dbname ="sportmanager_db";
 
 if(!$con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname))
 {

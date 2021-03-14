@@ -73,6 +73,61 @@ function signup_data($con){
 		}
 	}
 }
+
+function login_data($con){
+	if($_SERVER['REQUEST_METHOD'] == "POST")
+	{
+		//something was posted
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+
+		if(!empty($email) && !empty($password))
+		{
+
+			//read from database
+			$query = "select * from users where Email = '$email' limit 1";
+			$result = mysqli_query($con, $query);
+
+			if($result)
+			{
+				if($result && mysqli_num_rows($result) > 0)
+				{
+
+					$user_data = mysqli_fetch_assoc($result);
+					
+					if($user_data['Password'] === $password)
+					{
+            if(isset($_POST['remember'])){
+              setcookie('email',$email, time()+60*60*7);
+              setcookie('password',$password, time()+60*60*7);
+            }
+			$_SESSION['id'] = $user_data['id'];
+            if($user_data['Roleid'] == 1)
+            {
+              header("Location:teammanager/index.php");
+              
+						die;
+            }elseif ($user_data['Roleid'] == 2)
+            {
+              header("Location:squadmember/index.php");
+						  die;
+            }
+						
+					}
+				}
+			}
+			
+			echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Error !</strong> Wrong email or password !</div>'; 
+		}else
+		{
+      echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>Error !</strong> Wrong email or password !</div>'; 
+		}
+	}
+}
 	 function user_login_check($con)
 	{
 	
@@ -96,6 +151,31 @@ function signup_data($con){
 		die;
 	
 	}
+	function fixture_check($con)
+	{
+	
+		if(isset($_SESSION['id']))
+		{
+	
+			$id = $_SESSION['id'];
+			$Fix_query = "select * from users where id = '$id' limit 1";
+	
+			$result = mysqli_query($con,$Fix_query);
+			if($result && mysqli_num_rows($result) > 0)
+			{
+	
+				$fix_data = mysqli_fetch_assoc($result);
+				return $fix_data;
+			}
+		}
+	
+		//redirect to login
+		header("Location: login.php");
+		die;
+	
+	}
+
+
 	function logout(){
 		session_start();
 

@@ -1,60 +1,11 @@
 <?php 
 
-session_start();
+  session_start();
 
 	include("connection.php");
 	include("functions.php");
 
-
-	if($_SERVER['REQUEST_METHOD'] == "POST")
-	{
-		//something was posted
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-
-		if(!empty($email) && !empty($password))
-		{
-
-			//read from database
-			$query = "select * from users where Email = '$email' limit 1";
-			$result = mysqli_query($con, $query);
-
-			if($result)
-			{
-				if($result && mysqli_num_rows($result) > 0)
-				{
-
-					$user_data = mysqli_fetch_assoc($result);
-					
-					if($user_data['Password'] === $password)
-					{
-
-						$_SESSION['id'] = $user_data['id'];
-            if($user_data['Roleid'] == 1)
-            {
-              header("Location:teammanager/index.php");
-              
-						die;
-            }elseif ($user_data['Roleid'] == 2)
-            {
-              header("Location:squadmember/index.php");
-						  die;
-            }
-						
-					}
-				}
-			}
-			
-			echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Error !</strong> Wrong email or password !</div>'; 
-		}else
-		{
-      echo '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
-			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			<strong>Error !</strong> Wrong email or password !</div>'; 
-		}
-	}
+  $user_Login = login_data($con);
 
 ?>
 <!DOCTYPE html>
@@ -85,9 +36,25 @@ session_start();
               <div class="form-group mb-4">
                 <label for="password">Password</label>
                 <input type="password" name="password" id="password" class="form-control" placeholder="enter your passsword">
+                
+              </div>
+              <div class="form-group mb-4">
+              <label for="password">Remember Me</label>
+                <input type="checkbox" name="remember" value="1" class="checkbox" placeholder="enter your passsword">
               </div>
               <input name="login" id="login" class="btn btn-block login-btn" type="submit" value="Login">
             </form>
+            <?php
+              if(isset($_COOKIE['email']) and isset($_COOKIE['password'])){
+                $email = $_COOKIE['email'];
+                $pass = $_COOKIE['password'];
+                echo "<script>
+                  document.getElementById('email').value = '$email';
+                  document.getElementById('password').value = '$pass';
+            
+                </script>";
+              }
+            ?>
            <!--  <a href="#!" class="forgot-password-link">Forgot password?</a> -->
             <p class="login-wrapper-footer-text">Don't have an account?<br> <a href="managersignup.php" class="text-reset">Register here as a team manager</a><br><a href="membersignup.php" class="text-reset">Register here as a squad member</a></p>
           </div>

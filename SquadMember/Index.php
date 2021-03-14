@@ -1,10 +1,15 @@
 <?php 
 session_start();
-
+  
     include("C:/xampp/htdocs/sportmanagerapp/connection.php");
     include("C:/xampp/htdocs/sportmanagerapp/functions.php");
 
 	$check_login = user_login_check($con);
+  
+  $resultFixs = mysqli_query($con,"SELECT * FROM Fixtures");
+	//$fixture_data = mysqli_fetch_assoc($resultFixs);
+  $check_fixture = fixture_check($con);
+			
 
 ?>
 <!DOCTYPE html>
@@ -87,37 +92,7 @@ body {
    <a href="../logout.php">Sign Out</a>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Add Fixture</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-            <div class="col-md-4">Home Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="hTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Away Team</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">Date/Time</div>
-      <div class="col-md-4 ml-auto"><input type="text" name="aTeam"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="btnSetUpFixture" class="btn btn-primary">Set Up Fixture</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
 
@@ -129,17 +104,44 @@ body {
 <h2>Fixtures</h2>
 <br>
 
+<div class="row">
+        <table>
+          <tr>
+            <th class="col-md-6"><p>Home Vs Away</p></th>
+            <th class="col-md-6">Date/Time</th>
+            <th class="col-md-3"></th>
+          <th class="col-md-3 ml-auto"></th>
 
+          </tr>
+          <br>
+          <br>
+          <?php while($row = mysqli_fetch_array($resultFixs) )
+                {
+                ?>
+          <tr>
+            <td class="col-md-6"><p><?php echo $row["Home"]; ?> vs <?php echo $row["Away"]; ?></p></td>
+            <td class="col-md-6"><?php echo $row["Date"]; ?>/<?php echo $row["Time"]; ?></td>
+            <td class="col-md-3"><button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Set Availability</button></td>
+            <td class="col-md-3 ml-auto"><button type="button" id="btnViewTeam" onclick="viewTeam()" class="btn btn-primary">Team Selected</button></td>
+
+          </tr>
+          <br><br>
+          <?php }  ?>
+    <?php
+     // close connection database
+     mysqli_close($con);
+                ?>
+        </table>  
 
            
-                 <div class="row">
+                <!--  <div class="row">
 
             <div class="col-md-3"><p>Home Vs Away</p></div>
             <div class="col-md-3">Date/Time</div>
             <div class="col-md-3"><button type="button"  data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Set Availability</button></div>
       <div class="col-md-3 ml-auto"><button type="button" id="btnViewTeam" onclick="viewTeam()" class="btn btn-primary">View Team</button></div>
 
-        </div>
+        </div> -->
           <div id="response_message" id="viewSelectedTeam" hidden="true" class="col">
                     <form>
 
@@ -179,11 +181,11 @@ body {
       </div>
       <div class="modal-body">
         <div class="row">
-            <div class="col-md-4">Home Team<br>Vs</div>
+            <div class="col-md-4"><?php echo $check_fixture() ?><br>Vs</div>
       <div class="col-md-8">Available?</div>
         </div>
         <div class="row">
-            <div class="col-md-4">Away Team</div>
+            <div class="col-md-4"><?php echo $resultFixs["Away"]; ?></div>
       <div class="col-md-4">
         <div class="form-check">
   <input class="form-check-input" type="radio" checked><p style="padding-left:20px">Yes</p>
@@ -202,7 +204,7 @@ body {
 
        
         <div class="row">
-            <div class="col-md-4">Date/Time</div>
+            <div class="col-md-4"><?php echo $resultFixs["Date"]; ?>/<?php echo $resultFixs["Time"]; ?></div>
       <div class="col-md-4 ml-auto"></div>
         </div><br>
    
