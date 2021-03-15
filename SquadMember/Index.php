@@ -110,7 +110,7 @@ body {
             <th class="col-md-6"><p>Home Vs Away</p></th>
             <th class="col-md-6">Date/Time</th>
             <th class="col-md-3"></th>
-          <th class="col-md-3 ml-auto"></th>
+          <th class="col-md-3"></th>
 
           </tr>
           <br>

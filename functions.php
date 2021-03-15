@@ -197,18 +197,9 @@ function login_data($con){
    		$home_team = $_POST['homeT'];
     	$away_team = $_POST['awayT'];
     	$fixture_date = date('Y-m-d', strtotime($_POST['Fixturedate']));
-		$time = $_POST['time'];
-    	
-
-		if ($home_team == "" || $away_team == "" || $fixture_date == "" /* $time == ""  */) {
-			$msg = '<div class="alert alert-danger alert-dismissible mt-3" id="flash-msg">
-	  				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-	  				<strong>Error !</strong> Please, User Registration field must not be Empty !</div>';
-			  return $msg;
-		  }else{
+		$time = $_POST['time'];	
 			
-			//save to database
-			
+			//save to database		
 			$query = "insert into Fixtures (
 				Home,Away,Date,Time) values 
 			('$home_team','$away_team','$fixture_date','$time'
@@ -223,7 +214,7 @@ function login_data($con){
 			<strong>Success !</strong> Wow, you have Successfully added a fixture!</div>';
 
 			die;
-			}
+			
 		}
 	}
 

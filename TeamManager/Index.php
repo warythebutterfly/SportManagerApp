@@ -7,7 +7,9 @@ session_start();
 	$check_login = user_login_check($con);
   $add_fixtures = Add_Fixtures($con);
   $resultFix = mysqli_query($con,"SELECT * FROM Fixtures");
+
   $resultTeam = mysqli_query($con,"SELECT * FROM Teams");
+  $resultTeam2 = mysqli_query($con,"SELECT * FROM Teams");
 
 ?>
 <!DOCTYPE html>
@@ -140,18 +142,18 @@ body {
        <?php while ($rows = mysqli_fetch_assoc($resultTeam)){
          $home_team = $rows['Name'];
          echo "<option value='$home_team'>$home_team</option>";
-       } ?>
+       }?>
        </select>
       </div>
       <div class="form-group">
        <label>Away Team</label>
        <select type="name" class="form-control" name="awayT" required>
-       <?php while ($rowss = mysqli_fetch_assoc($resultTeam)){
-         if($rowss['Name'] == PSG)
-         $away_team = $rowss;
+        <?php while ($rowss = mysqli_fetch_assoc($resultTeam2)){
+
+         $away_team = $rowss['Name'];
          
          echo "<option value='$away_team'>$away_team</option>";
-       } ?>
+       } ?> 
        </select>      
       </div>
       <div class="form-group">
@@ -203,7 +205,7 @@ body {
             <th class="col-md-6"><p>Home Vs Away</p></th>
             <th class="col-md-6">Date/Time</th>
             <th class="col-md-3"></th>
-          <th class="col-md-3 ml-auto"></th>
+            <th class="col-md-3 "></th>
 
           </tr>
           <br>

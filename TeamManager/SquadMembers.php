@@ -6,7 +6,9 @@ include("C:/xampp/htdocs/sportmanagerapp/functions.php");
 
   $result = mysqli_query($con,"SELECT * FROM users WHERE Roleid = 2"  );
   $add_fixtures = Add_Fixtures($con);
+
   $resultTeam = mysqli_query($con,"SELECT * FROM Teams"  );
+  $resultTeam2 = mysqli_query($con,"SELECT * FROM Teams");
 	$check_login = user_login_check($con);
 
 ?>
@@ -120,12 +122,24 @@ body {
      <div class="modal-body">     
       <div class="form-group">
        <label>Home Team</label>
-       <input type="name" class="form-control" name="homeT" required>
-      </div>
+       <select type="name" class="form-control" name="homeT" required>
+       <?php while ($rows = mysqli_fetch_assoc($resultTeam)){
+         $home_team = $rows['Name'];
+         echo "<option value='$home_team'>$home_team</option>";
+       }?>
+       </select>
+       </div>
       <div class="form-group">
        <label>Away Team</label>
-       <input type="name" class="form-control" name="awayT" required>
-      </div>
+       <select type="name" class="form-control" name="awayT" required>
+        <?php while ($rowss = mysqli_fetch_assoc($resultTeam2)){
+
+         $away_team = $rowss['Name'];
+         
+         echo "<option value='$away_team'>$away_team</option>";
+       } ?> 
+       </select>  
+       </div>
       <div class="form-group">
        <label>Date</label>
        <input type="date" class="form-control" name="Fixturedate" required></input>
