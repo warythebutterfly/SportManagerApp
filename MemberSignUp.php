@@ -6,7 +6,6 @@ session_start();
 
   $user_Registeration = signup_data($con);
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

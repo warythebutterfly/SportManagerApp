@@ -1,15 +1,18 @@
 <?php 
-session_start();
+  session_start();
   
     include("C:/xampp/htdocs/sportmanagerapp/connection.php");
     include("C:/xampp/htdocs/sportmanagerapp/functions.php");
 
-	$check_login = user_login_check($con);
-  
-  $resultFixs = mysqli_query($con,"SELECT * FROM Fixtures");
-	//$fixture_data = mysqli_fetch_assoc($resultFixs);
-  $check_fixture = fixture_check($con);
-			
+	  $check_login = user_login_check($con);
+
+    availability_check($con);
+
+    $resultFixs = mysqli_query($con,"SELECT * FROM Fixtures");
+    $result = mysqli_query($con,"SELECT * FROM users WHERE Roleid = 2");
+
+    $user_data = mysqli_fetch_assoc($result);
+
 
 ?>
 <!DOCTYPE html>
@@ -33,10 +36,8 @@ function closeNav() {
   document.getElementById("mySidenav").style.width = "0";
 }
 
-function viewTeam(){
-  document.getElementById("viewSelectedTeam").style.display="none";
-}
 </script>
+
 <style>
 body {
   font-family: "Lato", sans-serif;
@@ -83,16 +84,17 @@ body {
 </style>
 </head>
 <body style="padding: 30px">
+ <div class="alert alert-success alert-dismissible mt-3" id="flash-msg">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+			<strong>welcome <?php echo $check_login['FirstName'];?>  <?php echo $check_login['LastName'];?></div>
+      
+      
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="index.html">Home</a>
-  <a href="squadmembers.php">Squad Members</a>
-  <a type="button" href="#">Swap</a>
+  <a href="index.php">Home</a>
    <a href="../logout.php">Sign Out</a>
 </div>
-
-
 
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
 
@@ -107,6 +109,7 @@ body {
 <div class="row">
         <table>
           <tr>
+          <th class="col-md-3" type="hidden"></th>
             <th class="col-md-6"><p>Home Vs Away</p></th>
             <th class="col-md-6">Date/Time</th>
             <th class="col-md-3"></th>
@@ -115,63 +118,38 @@ body {
           </tr>
           <br>
           <br>
-          <?php while($row = mysqli_fetch_array($resultFixs) )
-                {
+          <?php /* while($row = mysqli_fetch_array($resultFixs) )
+                { */if($resultFixs)
+                  {
+                    foreach($resultFixs as $row)
+                    {
+                  
                 ?>
           <tr>
+          
+            <td class="col-md-6" type="hidden" id="fixtureId"><p><?php echo $row["id"]; ?>  </p></td>
             <td class="col-md-6"><p><?php echo $row["Home"]; ?> vs <?php echo $row["Away"]; ?></p></td>
             <td class="col-md-6"><?php echo $row["Date"]; ?>/<?php echo $row["Time"]; ?></td>
-            <td class="col-md-3"><button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Set Availability</button></td>
-            <td class="col-md-3 ml-auto"><button type="button" id="btnViewTeam" onclick="viewTeam()" class="btn btn-primary">Team Selected</button></td>
-
+            <td class="col-md-3">
+            <button type="button" class="btn btn-primary availablebtn">Set Availability</button>
+            </td>
+            <td class="col-md-3">
+            <button id="btnViewTeam" type="button" class="btn btn-primary teamSelectedbtn">View Selected Squad Members</button>
+            </td>
+            
           </tr>
+          <?php } 
+                  } ?>
           <br><br>
-          <?php }  ?>
-    <?php
-     // close connection database
-     mysqli_close($con);
-                ?>
+          
+    
         </table>  
-
-           
-                <!--  <div class="row">
-
-            <div class="col-md-3"><p>Home Vs Away</p></div>
-            <div class="col-md-3">Date/Time</div>
-            <div class="col-md-3"><button type="button"  data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Set Availability</button></div>
-      <div class="col-md-3 ml-auto"><button type="button" id="btnViewTeam" onclick="viewTeam()" class="btn btn-primary">View Team</button></div>
-
-        </div> -->
-          <div id="response_message" id="viewSelectedTeam" hidden="true" class="col">
-                    <form>
-
-                        <div class="form-group">
-                            <label for="username" class="sr-only">UserName</label>
-                            <input required id="username" type="text" placeholder="UserName" class="mr-5 form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="firstname" class="sr-only">FirstName</label>
-                            <input required id="firstname" type="text" placeholder="FirstName" class="mr-5 form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="lastname" class="sr-only">LastName</label>
-                            <input required id="lastname" type="text" placeholder="LastName" class="mr-5 form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email" class="sr-only">Email</label>
-                            <input required id="email" type="text" placeholder="Email" style="width:300px" class="mr-5 form-control">
-                        </div>
-                        
-                    </form>
-</div>
-                </div>
                 
-                <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+  <!-- set availability Modal -->
+  <div class="modal fade" id="availabilityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
+  <form method="post" enctype="multipart/form-data">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalCenterTitle">Set Availability</h5>
@@ -181,59 +159,155 @@ body {
       </div>
       <div class="modal-body">
         <div class="row">
-            <div class="col-md-4"><?php echo $check_fixture() ?><br>Vs</div>
+            
       <div class="col-md-8">Available?</div>
         </div>
-        <div class="row">
-            <div class="col-md-4"><?php echo $resultFixs["Away"]; ?></div>
+         <div class="row">
+            <div id="awayM" class="col-md-4"></div> 
       <div class="col-md-4">
         <div class="form-check">
-  <input class="form-check-input" type="radio" checked><p style="padding-left:20px">Yes</p>
+      <input class="form-check-input" name ="isactive" type="radio" value="1" ><p style="padding-left:20px">Yes</p>
+                  
+      </div>
+      </div>
+      <div class="col-md-4">
+      <div class="form-check">
   
-</div>
-</div>
- <div class="col-md-4">
-  <div class="form-check">
-  <input class="form-check-input" type="radio"><p style="padding-left:20px">No</p>
-  <!-- <label class="form-check-label" for="flexRadioDefault1">
-    No
-  </label> -->
-</div>
-</div>
-</div>
+  
+      <input class="form-check-input" name ="isactive" type="radio" value="0"><p style="padding-left:20px">No</p>
+      <!-- <label class="form-check-label" for="flexRadioDefault1">
+      No
+      </label> -->
+  
+      <input type="hidden" name="fixture_data" id="fixture_id" class="form-control"></p>
+      <input type="hidden" id="HomeM" class="form-control"></p>
+      <input type="hidden" id="AwayM" class="form-control"></p>
+      <input type="hidden" id="date" class="form-control"></p>
+      <input type="hidden" id="time" class="form-control"></p>
+      </div>
+      </div>
+      </div>
 
        
-        <div class="row">
-            <div class="col-md-4"><?php echo $resultFixs["Date"]; ?>/<?php echo $resultFixs["Time"]; ?></div>
+       <div class="row">
+            
       <div class="col-md-4 ml-auto"></div>
         </div><br>
    
       <div class="row">
-           
-      <div class="col-md-6">
-        If no <input type="text" name="" placeholder="Kindly state why?">
-      </div>
-       <div class="col-md-6">
-        or <label for="myfile">Upload a document:</label> <input type="file" id="myFile" name="myFile">
-      </div>
+        <div class="col-md-6">
+          If NO <input type="text" name="reason" placeholder="Kindly state why?">
         </div>
-
+        
+        <div class="col-md-6">
+          or <label>Upload a document:</label> <input type="file" name="photo" id="fileSelect">
+        </div>
+      </div>
       </div>
 
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="btnSetUpFixture" class="btn btn-primary">Save Changes</button>
+        <button type="submit" name="save_changes" class="btn btn-primary">Save Changes</button>
       </div>
 
+      </div>
+    </form>
     </div>
-  </div>
-</div>
+</div> 
 
-</div>
-</div>
+                                  <!-- Selected team Modal -->
+          <div class="modal fade" id="teamSelectedModal" tabindex="1" role="dialog" aria-labelledby="CenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="CenterTitle">Team Selected</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                      </div>
+                      <div class="col-sm-10">
+                      <table>
+                      <thead>
+                  <tr>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>Email</th>
+                  </tr>
+                  <tr>
+                  </thead>
+                  
+                        <tbody id="selectedMembers">
+                                  
+                      <tbody>
+                      
+                      
+                </table>
+                    <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
 
+<script>
+  $(document).ready(function () {
+
+    $('.availablebtn').on('click', function (){
+
+      $('#availabilityModal').modal('show');
+
+      $tr = $(this).closest('tr');
+
+      var data = $tr.children("td").map(function (){
+          return $(this).text();
+      }).get();
+
+      console.log(data);
+
+      $('#fixture_id').val(data[0]);
+      $('#HomeM').val(data[1]);
+      $('#AwayM').val(data[2]);
+      $('#date').val(data[3]);
+      $('#time').val(data[4]);
+
+    });
+
+
+      //selected team
+    $('.teamSelectedbtn').on('click', function (){   
+    
+    $tr = $(this).closest('tr');
+
+     var data = $tr.children("td").map(function (){
+         return $(this).text();
+     }).get();
+
+     console.log(data);
+
+     $.ajax({
+     type: 'post', // the method (could be GET btw)
+     url: 'teamselectedapi.php?fixtureid='+data[0], // The file where my php code is
+     data: {
+     // all variables i want to pass. In this case, only one.
+     },
+       success: function(data) {
+         $('#teamSelectedModal').modal('show');
+          $("#teamSelectedModal").appendTo("body");
+         document.getElementById('selectedMembers').innerHTML = data; 
+         // in case of success get the output, i named data
+       
+     }
+   });
+     
+   }); 
+
+  });
+ 
+
+</script>
    
 </body>
-
+<!-- id="btnSetUpFixture -->
 </html> 

@@ -5,8 +5,6 @@ session_start();
 	include("functions.php");
 
   $user_Registeration = signup_data($con);
-  
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
